@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kevin Gibbs — Software Engineer</title>
+  <meta name="description" content="Kevin Gibbs — software engineer in Austin, TX. Systems programming in C, with stops in Java, Python, and Swift." />
+
+  <!-- Open Graph: controls how the page appears when shared on LinkedIn, Slack, iMessage, Facebook, etc. -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://kg-314.github.io/" />
+  <meta property="og:title" content="Kevin Gibbs — Software Engineer" />
+  <meta property="og:description" content="Writing low-level C for high-level problems. Software engineer in Austin, TX." />
+  <meta property="og:image" content="https://kg-314.github.io/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+
+  <!-- Twitter Card: same idea, Twitter/X-specific tags -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Kevin Gibbs — Software Engineer" />
+  <meta name="twitter:description" content="Writing low-level C for high-level problems. Software engineer in Austin, TX." />
+  <meta name="twitter:image" content="https://kg-314.github.io/og-image.png" />
+
+  <!-- Favicon: SVG for modern browsers (crisp at any size), PNG fallback for Safari and older browsers.
+       Apple touch icon is for when someone adds the page to their iOS home screen. -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+
+  <!-- Fonts: Fraunces for display, Inter Tight for body. Both from Google Fonts. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    /* ---------- Design tokens ----------
+       CSS custom properties (variables) defined once,
+       so the whole site stays consistent and is easy to retheme. */
+    :root {
+      --bg: #f4efe6;            /* warm cream */
+      --bg-deep: #ebe4d6;       /* slightly darker for sections */
+      --ink: #1a1715;           /* near-black, slightly warm */
+      --ink-soft: #4a4540;      /* secondary text */
+      --accent: #c5410b;        /* burnt orange, used sparingly */
+      --rule: #1a17151a;        /* hairline borders */
+
+      --font-display: 'Fraunces', Georgia, serif;
+      --font-body: 'Fraunces', Georgia, serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+      --max: 1200px;
+    }
+
+    /* ---------- Reset & base ---------- */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font-body);
+      font-size: 18px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+
+    .container {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    /* ---------- Top navigation ---------- */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 50;
+      backdrop-filter: blur(12px);
+      background: color-mix(in srgb, var(--bg) 80%, transparent);
+      border-bottom: 1px solid var(--rule);
+    }
+    nav .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 18px;
+      padding-bottom: 18px;
+    }
+    .brand {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 20px;
+      letter-spacing: -0.01em;
+    }
+    .brand-dot {
+      display: inline-block;
+      width: 8px; height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      text-transform: lowercase;
+      letter-spacing: 0.02em;
+    }
+    .nav-links a { position: relative; padding-bottom: 2px; }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      left: 0; bottom: 0;
+      width: 0; height: 1px;
+      background: var(--accent);
+      transition: width 0.25s ease;
+    }
+    .nav-links a:hover::after { width: 100%; }
+
+    /* ---------- Hero ----------
+       The "above the fold" first impression.
+       Large display type carries most of the weight. */
+    .hero {
+      padding: 200px 0 140px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-meta {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-bottom: 48px;
+      display: flex;
+      gap: 24px;
+      align-items: center;
+    }
+    .hero-meta::before {
+      content: '';
+      width: 40px;
+      height: 1px;
+      background: var(--ink);
+    }
+    .hero h1 {
+      font-family: var(--font-display);
+      font-weight: 300;
+      font-size: clamp(48px, 9vw, 132px); /* fluid: 48px on mobile, up to 132px on big screens */
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      margin: 0 0 48px;
+      font-variation-settings: "opsz" 144, "SOFT" 50; /* Fraunces' variable-font axes */
+    }
+    .hero h1 em {
+      font-style: italic;
+      font-weight: 400;
+      color: var(--accent);
+    }
+    .hero-sub {
+      max-width: 620px;
+      font-size: 22px;
+      line-height: 1.5;
+      color: var(--ink-soft);
+      margin-bottom: 56px;
+    }
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 18px 28px;
+      border: 1px solid var(--ink);
+      border-radius: 999px;
+      transition: all 0.25s ease;
+    }
+    .hero-cta:hover {
+      background: var(--ink);
+      color: var(--bg);
+    }
+    .hero-cta .arrow { transition: transform 0.25s ease; }
+    .hero-cta:hover .arrow { transform: translateX(4px); }
+
+    /* Decorative oversized number in the corner — pure typography as art */
+    .hero-num {
+      position: absolute;
+      right: -20px;
+      top: 140px;
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(180px, 30vw, 420px);
+      line-height: 1;
+      color: var(--accent);
+      opacity: 0.08;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    /* ---------- Section heading pattern ---------- */
+    .section { padding: 120px 0; border-top: 1px solid var(--rule); }
+    .section-head {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 80px;
+      margin-bottom: 80px;
+      align-items: baseline;
+    }
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-weight: 300;
+      font-size: clamp(36px, 5vw, 64px);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin: 0;
+    }
+    .section-title em { font-style: italic; color: var(--accent); }
+
+    /* ---------- Work / project list ----------
+       Each project is a horizontal row.
+       Hover reveals a thumbnail (or could reveal more detail). */
+    .work-list { border-top: 1px solid var(--rule); }
+    .project {
+      display: grid;
+      grid-template-columns: 80px 1fr 1fr 120px;
+      gap: 40px;
+      padding: 36px 88px 36px 0; /* right padding reserves space for the hover arrow */
+      align-items: center;
+      border-bottom: 1px solid var(--rule);
+      position: relative;
+      transition: padding 0.3s ease;
+    }
+    .project:hover { padding-left: 24px; padding-right: 64px; }
+    .project-num {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--ink-soft);
+    }
+    .project-title {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 28px;
+      letter-spacing: -0.02em;
+      margin: 0;
+    }
+    .project-desc {
+      font-size: 16px;
+      color: var(--ink-soft);
+      line-height: 1.5;
+    }
+    .project-year {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--ink-soft);
+      text-align: right;
+    }
+    .project::after {
+      content: '→';
+      position: absolute;
+      right: 24px;
+      font-family: var(--font-display);
+      font-size: 20px;
+      opacity: 0;
+      transform: translateX(-12px);
+      transition: all 0.3s ease;
+    }
+    .project:hover::after {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    .project-tags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    .tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.04em;
+      padding: 3px 10px;
+      border: 1px solid var(--rule);
+      border-radius: 999px;
+      color: var(--ink-soft);
+    }
+
+    /* ---------- About section ---------- */
+    .about-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+    }
+    .about-body p {
+      font-size: 22px;
+      line-height: 1.55;
+      margin: 0 0 24px;
+    }
+    .about-body p:last-child { margin-bottom: 0; }
+    .about-side {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.8;
+    }
+    .about-side dt {
+      color: var(--ink-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 24px;
+      font-size: 11px;
+    }
+    .about-side dt:first-child { margin-top: 0; }
+    .about-side dd { margin: 4px 0 0; }
+
+    /* ---------- Footer / contact ---------- */
+    footer {
+      padding: 140px 0 80px;
+      border-top: 1px solid var(--rule);
+    }
+    .footer-headline {
+      font-family: var(--font-display);
+      font-weight: 300;
+      font-style: italic;
+      font-size: clamp(48px, 8vw, 112px);
+      line-height: 1;
+      letter-spacing: -0.03em;
+      margin: 0 0 56px;
+    }
+    .footer-headline a { border-bottom: 2px solid var(--accent); }
+    .footer-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 32px;
+      border-top: 1px solid var(--rule);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--ink-soft);
+    }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a:hover { color: var(--accent); }
+
+    /* ---------- Reveal on scroll ----------
+       Elements with .reveal start invisible and slide up
+       when JS adds the .in class as they enter the viewport. */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .reveal.in {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ---------- Responsive: collapse on narrow screens ---------- */
+    @media (max-width: 800px) {
+      body { font-size: 16px; }
+      .nav-links { display: none; }
+      .hero { padding: 140px 0 80px; }
+      .section { padding: 80px 0; }
+      .section-head { grid-template-columns: 1fr; gap: 24px; margin-bottom: 48px; }
+      .project { grid-template-columns: 40px 1fr 60px; gap: 16px; }
+      .project-desc { display: none; }
+      .about-body { grid-template-columns: 1fr; gap: 40px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="container">
+      <a href="#top" class="brand"><span class="brand-dot"></span>Kevin Gibbs</a>
+      <div class="nav-links">
+        <a href="#work">work</a>
+        <a href="#about">about</a>
+        <a href="#contact">contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <header class="hero" id="top">
+    <div class="hero-num">01</div>
+    <div class="container">
+      <div class="hero-meta reveal">
+        <span>Software Engineer</span>
+        <span>·</span>
+        <span>Austin, TX</span>
+      </div>
+      <h1 class="reveal">
+        Writing low-level<br>
+        <em>C</em> for high-level<br>
+        problems.
+      </h1>
+      <p class="hero-sub reveal">
+        I'm a software engineer working across C, Java, Python, and Swift —
+        currently a Business Analyst at Capital One and looking for engineering roles
+        where I can build things people actually use.
+      </p>
+      <a href="#work" class="hero-cta reveal">
+        See selected work
+        <span class="arrow">→</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Work -->
+  <section class="section" id="work">
+    <div class="container">
+      <div class="section-head">
+        <div class="section-label">[ 01 ] Selected Work</div>
+        <h2 class="section-title">Projects I'm <em>proud</em> of, recent and otherwise.</h2>
+      </div>
+
+      <div class="work-list">
+
+        <a href="#" class="project">
+          <div class="project-num">001</div>
+          <div>
+            <h3 class="project-title">Blackjack Engine</h3>
+            <div class="project-tags">
+              <span class="tag">C</span>
+              <span class="tag">Systems</span>
+              <span class="tag">In Progress</span>
+            </div>
+          </div>
+          <div class="project-desc">A modular blackjack engine in C, built for speed and parallel simulation — groundwork for statistical analysis of basic strategy.</div>
+          <div class="project-year">2026</div>
+        </a>
+
+        <a href="#" class="project">
+          <div class="project-num">002</div>
+          <div>
+            <h3 class="project-title">Predicting Bird Strike Damage</h3>
+            <div class="project-tags">
+              <span class="tag">Python</span>
+              <span class="tag">scikit-learn</span>
+              <span class="tag">ML</span>
+            </div>
+          </div>
+          <div class="project-desc">Used gradient-boosted trees on the FAA wildlife strike database to predict aircraft damage. 0.82 balanced accuracy.</div>
+          <div class="project-year">2026</div>
+        </a>
+
+        <a href="#" class="project">
+          <div class="project-num">003</div>
+          <div>
+            <h3 class="project-title">ScratchBook</h3>
+            <div class="project-tags">
+              <span class="tag">Swift</span>
+              <span class="tag">iOS</span>
+              <span class="tag">Firebase</span>
+            </div>
+          </div>
+          <div class="project-desc">An iOS app that turns guided activity prompts into a personal scrapbook of photos, captions, and ratings.</div>
+          <div class="project-year">2026</div>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section class="section" id="about">
+    <div class="container">
+      <div class="section-head">
+        <div class="section-label">[ 02 ] About</div>
+        <h2 class="section-title">A few <em>words</em> about me.</h2>
+      </div>
+
+      <div class="about-body">
+        <div>
+          <p>I write software because I like the feeling of figuring out how something works at the level below the one I'm working on. Most of my code is C — currently a blackjack engine I've been chipping away at — but I've also worked across iOS, web, and machine learning, and I'm interested in the messy edges where those meet systems work.</p>
+          <p>Outside of code, I play a lot of tennis. There's something about the loop of trying a shot, missing it, adjusting, and trying again that translates pretty directly to debugging — so I'd argue it counts as professional development.</p>
+        </div>
+        <dl class="about-side">
+          <dt>Currently</dt>
+          <dd>Business Analyst at Capital One</dd>
+          <dt>Education</dt>
+          <dd>The University of Texas at Austin</dd>
+          <dt>Stack I reach for</dt>
+          <dd>C, Python, Java, Swift — and scikit-learn when the problem calls for it</dd>
+          <dt>Elsewhere</dt>
+          <dd>
+            <a href="https://github.com/kg-314">GitHub</a> ·
+            <a href="https://www.linkedin.com/in/-kevingibbs/">LinkedIn</a>
+          </dd>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer / Contact -->
+  <footer id="contact">
+    <div class="container">
+      <h2 class="footer-headline">
+        Want to build<br>
+        something? <a href="mailto:kevingibbs@utexas.edu">say&nbsp;hello</a>.
+      </h2>
+      <div class="footer-meta">
+        <div>© 2026 Kevin Gibbs</div>
+        <div class="footer-links">
+          <a href="https://github.com/kg-314">GitHub</a>
+          <a href="https://www.linkedin.com/in/-kevingibbs/">LinkedIn</a>
+          <a href="mailto:kevingibbs@utexas.edu">Email</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Reveal-on-scroll: watch any element with class "reveal".
+    // When it enters the viewport, add "in" — CSS handles the animation.
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('in');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+    // Stagger the hero reveals so they cascade instead of all appearing at once.
+    document.querySelectorAll('.hero .reveal').forEach((el, i) => {
+      el.style.transitionDelay = (i * 120) + 'ms';
+    });
+  </script>
+
+</body>
+</html>
